@@ -53,7 +53,7 @@ def signatures_to_letter(signature, img_shape, thickness):
 		result=result+draw_bar((1,0),(.5,.5),img_shape, thickness) 
 	if(signature[15]): 
 		result=result+draw_bar((1,1),(.5,.5),img_shape, thickness) 
-	return result
+	return np.minimum(result, 1)
 
 #def signatures_to_words:
 #	for m in N:
@@ -153,6 +153,18 @@ def char_to_signatures(S):
 	return signature
 
 
+def display_word(word, img_shape=(150,100), thickness=.1):
+	pl.figure()
+	result = np.zeros((img_shape[0],1))	
+	for letter in word:
+		letter_display = signatures_to_letter(char_to_signatures(letter), img_shape, thickness)
+		result = np.hstack((result, letter_display))
+		result = np.hstack((result, np.zeros((img_shape[0], 10))))
+	pl.imshow(result, interpolation="nearest")
+	pl.axis('off')
+	pl.gray()
+	pl.show()
+
 def test_signature():
 	signature = np.array([1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0])
 	display = signatures_to_letter(signature, (150,100), .1)
@@ -161,6 +173,17 @@ def test_signature():
 	pl.imshow(display, interpolation="nearest")
 	pl.gray()
 	pl.show()
+
+def test_alphabet():
+	pl.figure()
+	for i, letter in enumerate(['A', 'B', 'C', 'D', 'E', 'F', 'G']):
+		pl.subplot(1, 7, i + 1)
+		display = signatures_to_letter(char_to_signatures(letter), (150,100), .1)
+		pl.imshow(display, interpolation="nearest")
+		pl.axis('off')
+		pl.gray()
+	pl.show()
+
 
 if __name__ == "__main__":
     display = signatures_to_letter(test_signature(), (150,100), .1)
