@@ -22,29 +22,29 @@ def signatures_to_letter(signature, img_shape, thickness):
 	result = np.zeros(img_shape)
 	signature = signature.ravel()
 	if(signature[0]):
-		result=result+draw_bar((0,0),(.5,0),img_shape, thickness) 
+		result=result+draw_bar((0,0),(.5,0),img_shape, 2.*thickness) 
 	if(signature[1]): 
-		result=result+draw_bar((.5,0),(1,0),img_shape, thickness) 
+		result=result+draw_bar((.5,0),(1,0),img_shape, 2.*thickness) 
 	if(signature[2]): 
 		result=result+draw_bar((0,.5),(.5,.5),img_shape, thickness) 
 	if(signature[3]): 
 		result=result+draw_bar((.5,.5),(1,.5),img_shape, thickness) 
 	if(signature[4]): 
-		result=result+draw_bar((0,1),(.5,1),img_shape, thickness) 
+		result=result+draw_bar((0,1),(.5,1),img_shape, 2.*thickness) 
 	if(signature[5]): 
-		result=result+draw_bar((.5,1),(1,1),img_shape, thickness) 
+		result=result+draw_bar((.5,1),(1,1),img_shape, 2.*thickness) 
 	if(signature[6]): 
-		result=result+draw_bar((0,0),(0,.5),img_shape, thickness) 
+		result=result+draw_bar((0,0),(0,.5),img_shape, 2.*thickness) 
 	if(signature[7]): 
-		result=result+draw_bar((0,.5),(0,1),img_shape, thickness) 
+		result=result+draw_bar((0,.5),(0,1),img_shape, 2.*thickness) 
 	if(signature[8]): 
 		result=result+draw_bar((.5,0),(.5,.5),img_shape, thickness) 
 	if(signature[9]): 
 		result=result+draw_bar((.5,.5),(.5,1),img_shape, thickness) 
 	if(signature[10]): 
-		result=result+draw_bar((1,0),(1,.5),img_shape, thickness) 
+		result=result+draw_bar((1,0),(1,.5),img_shape, 2.*thickness) 
 	if(signature[11]): 
-		result=result+draw_bar((1,.5),(1,1),img_shape, thickness) 
+		result=result+draw_bar((1,.5),(1,1),img_shape, 2.*thickness) 
 	if(signature[12]): 
 		result=result+draw_bar((0,0),(.5,.5),img_shape, thickness) 
 	if(signature[13]): 
