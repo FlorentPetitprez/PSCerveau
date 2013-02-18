@@ -55,42 +55,6 @@ def signatures_to_letter(signature, img_shape, thickness):
 		result=result+draw_bar((1,1),(.5,.5),img_shape, thickness) 
 	return np.minimum(result, 1)
 
-#def signatures_to_words:
-#	for m in N:
-#		result=np.hstack((result,np.zeros(img_shape)))
-#		if(m[0]):
-#			result=result+draw_bar((0,0),(img_shape[0]/2,0),img_shape, thickness) 
-#		if(m[1]): 
-#			result=result+draw_bar((img_shape[0]/2,0),(img_shape[0],0),img_shape, thickness) 
-#		if(m[2]): 
-#			result=result+draw_bar((0,img_shape[1]/2),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-#		if(m[3]): 
-#			result=result+draw_bar((img_shape[0]/2,img_shape[1]/2),(img_shape[0],img_shape[1]/2),img_shape, thickness) 
-#		if(m[4]): 
-#			result=result+draw_bar((0,img_shape[1]),(img_shape[0]/2,img_shape[1]),img_shape, thickness) 
-#		if(m[5]): 
-#			result=result+draw_bar((img_shape[0]/2,img_shape[1]),(img_shape[0],img_shape[1]),img_shape, thickness) 
-#		if(m[6]): 
-#			result=result+draw_bar((0,0),(0,img_shape[1]/2),img_shape, thickness) 
-#		if(m[7]): 
-#			result=result+draw_bar((0,img_shape[1]/2),(0,img_shape[1]),img_shape, thickness) 
-#		if(m[8]): 
-#			result=result+draw_bar((img_shape[0]/2,0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-#		if(m[9]): 
-#			result=result+draw_bar((img_shape[0]/2,img_shape[1]/2),(img_shape[0]/2,img_shape[1]),img_shape, thickness) 
-#		if(m[10]): 
-#			result=result+draw_bar((img_shape[0],0),(img_shape[0],img_shape[1]/2),img_shape, thickness) 
-#		if(m[11]): 
-#			result=result+draw_bar((img_shape[0],img_shape[1]/2),(img_shape[0],img_shape[1]),img_shape, thickness) 
-#		if(m[12]): 
-#			result=result+draw_bar((0,0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-#		if(m[13]): 
-#			result=result+draw_bar((0,img_shape[1]),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-#		if(m[14]): 
-#			result=result+draw_bar((img_shape[0],0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-#		if(m[15]): 
-#			result=result+draw_bar((img_shape[0],img_shape[1]),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-#	return result
  
 def char_to_signatures(S): 
 	n=len(S) 
