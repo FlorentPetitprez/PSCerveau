@@ -18,45 +18,79 @@ def draw_bar(start, end, img_shape, thickness):
     img=((new_grid[0]>=0.)*(new_grid[0]<=1.)*(np.abs(new_grid[1])<=thickness/2)).reshape(img_shape).astype(np.float64)
     return img
 
-def signatures_to_images(signature, img_shape, thickness): 
+def signatures_to_letter(signature, img_shape, thickness): 
 	result = np.zeros(img_shape)
-	N=signature.reshape(4,-1)
-	zeros=np.zeros(img_shape)
-	for m in N:
-		result=np.hstack((result,np.zeros(img_shape)))
-		if(m[0]):
-			result=result+draw_bar((0,0),(img_shape[0]/2,0),img_shape, thickness) 
-		if(m[1]): 
-			result=result+draw_bar((img_shape[0]/2,0),(img_shape[0],0),img_shape, thickness) 
-		if(m[2]): 
-			result=result+draw_bar((0,img_shape[1]/2),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-		if(m[3]): 
-			result=result+draw_bar((img_shape[0]/2,img_shape[1]/2),(img_shape[0],img_shape[1]/2),img_shape, thickness) 
-		if(m[4]): 
-			result=result+draw_bar((0,img_shape[1]),(img_shape[0]/2,img_shape[1]),img_shape, thickness) 
-		if(m[5]): 
-			result=result+draw_bar((img_shape[0]/2,img_shape[1]),(img_shape[0],img_shape[1]),img_shape, thickness) 
-		if(m[6]): 
-			result=result+draw_bar((0,0),(0,img_shape[1]/2),img_shape, thickness) 
-		if(m[7]): 
-			result=result+draw_bar((0,img_shape[1]/2),(0,img_shape[1]),img_shape, thickness) 
-		if(m[8]): 
-			result=result+draw_bar((img_shape[0]/2,0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-		if(m[9]): 
-			result=result+draw_bar((img_shape[0]/2,img_shape[1]/2),(img_shape[0]/2,img_shape[1]),img_shape, thickness) 
-		if(m[10]): 
-			result=result+draw_bar((img_shape[0],0),(img_shape[0],img_shape[1]/2),img_shape, thickness) 
-		if(m[11]): 
-			result=result+draw_bar((img_shape[0],img_shape[1]/2),(img_shape[0],img_shape[1]),img_shape, thickness) 
-		if(m[12]): 
-			result=result+draw_bar((0,0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-		if(m[13]): 
-			result=result+draw_bar((0,img_shape[1]),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-		if(m[14]): 
-			result=result+draw_bar((img_shape[0],0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
-		if(m[15]): 
-			result=result+draw_bar((img_shape[0],img_shape[1]),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+	signature = signature.ravel()
+	if(signature[0]):
+		result=result+draw_bar((0,0),(.5,0),img_shape, thickness) 
+	if(signature[1]): 
+		result=result+draw_bar((.5,0),(1,0),img_shape, thickness) 
+	if(signature[2]): 
+		result=result+draw_bar((0,.5),(.5,.5),img_shape, thickness) 
+	if(signature[3]): 
+		result=result+draw_bar((.5,.5),(1,.5),img_shape, thickness) 
+	if(signature[4]): 
+		result=result+draw_bar((0,1),(.5,1),img_shape, thickness) 
+	if(signature[5]): 
+		result=result+draw_bar((.5,1),(1,1),img_shape, thickness) 
+	if(signature[6]): 
+		result=result+draw_bar((0,0),(0,.5),img_shape, thickness) 
+	if(signature[7]): 
+		result=result+draw_bar((0,.5),(0,1),img_shape, thickness) 
+	if(signature[8]): 
+		result=result+draw_bar((.5,0),(.5,.5),img_shape, thickness) 
+	if(signature[9]): 
+		result=result+draw_bar((.5,.5),(.5,1),img_shape, thickness) 
+	if(signature[10]): 
+		result=result+draw_bar((1,0),(1,.5),img_shape, thickness) 
+	if(signature[11]): 
+		result=result+draw_bar((1,.5),(1,1),img_shape, thickness) 
+	if(signature[12]): 
+		result=result+draw_bar((0,0),(.5,.5),img_shape, thickness) 
+	if(signature[13]): 
+		result=result+draw_bar((0,1),(.5,.5),img_shape, thickness) 
+	if(signature[14]): 
+		result=result+draw_bar((1,0),(.5,.5),img_shape, thickness) 
+	if(signature[15]): 
+		result=result+draw_bar((1,1),(.5,.5),img_shape, thickness) 
 	return result
+
+#def signatures_to_words:
+#	for m in N:
+#		result=np.hstack((result,np.zeros(img_shape)))
+#		if(m[0]):
+#			result=result+draw_bar((0,0),(img_shape[0]/2,0),img_shape, thickness) 
+#		if(m[1]): 
+#			result=result+draw_bar((img_shape[0]/2,0),(img_shape[0],0),img_shape, thickness) 
+#		if(m[2]): 
+#			result=result+draw_bar((0,img_shape[1]/2),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+#		if(m[3]): 
+#			result=result+draw_bar((img_shape[0]/2,img_shape[1]/2),(img_shape[0],img_shape[1]/2),img_shape, thickness) 
+#		if(m[4]): 
+#			result=result+draw_bar((0,img_shape[1]),(img_shape[0]/2,img_shape[1]),img_shape, thickness) 
+#		if(m[5]): 
+#			result=result+draw_bar((img_shape[0]/2,img_shape[1]),(img_shape[0],img_shape[1]),img_shape, thickness) 
+#		if(m[6]): 
+#			result=result+draw_bar((0,0),(0,img_shape[1]/2),img_shape, thickness) 
+#		if(m[7]): 
+#			result=result+draw_bar((0,img_shape[1]/2),(0,img_shape[1]),img_shape, thickness) 
+#		if(m[8]): 
+#			result=result+draw_bar((img_shape[0]/2,0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+#		if(m[9]): 
+#			result=result+draw_bar((img_shape[0]/2,img_shape[1]/2),(img_shape[0]/2,img_shape[1]),img_shape, thickness) 
+#		if(m[10]): 
+#			result=result+draw_bar((img_shape[0],0),(img_shape[0],img_shape[1]/2),img_shape, thickness) 
+#		if(m[11]): 
+#			result=result+draw_bar((img_shape[0],img_shape[1]/2),(img_shape[0],img_shape[1]),img_shape, thickness) 
+#		if(m[12]): 
+#			result=result+draw_bar((0,0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+#		if(m[13]): 
+#			result=result+draw_bar((0,img_shape[1]),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+#		if(m[14]): 
+#			result=result+draw_bar((img_shape[0],0),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+#		if(m[15]): 
+#			result=result+draw_bar((img_shape[0],img_shape[1]),(img_shape[0]/2,img_shape[1]/2),img_shape, thickness) 
+#	return result
  
 def char_to_signatures(S): 
 	n=len(S) 
@@ -118,10 +152,20 @@ def char_to_signatures(S):
 			print"Probleme" 
 	return signature
 
-if __name__ == "__main__":
-    b = signatures_to_images(char_to_signatures('A'), (150,100), .1)
 
+def test_signature():
+	signature = np.array([1,1,0,0,1,1,1,1,1,1,0,0,0,0,0,0])
+	display = signatures_to_letter(signature, (150,100), .1)
+	display = np.minimum(display, 1)
+	pl.figure()
+	pl.imshow(display, interpolation="nearest")
+	pl.gray()
+	pl.show()
+
+if __name__ == "__main__":
+    display = signatures_to_letter(test_signature(), (150,100), .1)
+    display = np.minimum(display, 1)
     pl.figure()
-    pl.imshow(b, interpolation="nearest")
+    pl.imshow(display, interpolation="nearest")
     pl.gray()
     pl.show()
