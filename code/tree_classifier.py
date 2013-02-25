@@ -23,7 +23,20 @@ forest = ExtraTreesClassifier()
 forest.fit(train_data, train_tar)
 y_test_predict = forest.predict(test_data)
 
-from sklearn.cross_validation import cross_val_score
+from sklearn.cross_validation import KFold
+
+def cross_val_score(clf, X, y, cv=None):
+    if cv is None:
+	cv = KFold(len(X), 5)
+
+    scores= []
+    for train, test in cv:
+        clf.fit(X[train], y[train])
+        score = clf.score(X[test], y[test])
+        scores.append(score)
+
+    return scores
+
 
 score = cross_val_score(forest, data, y)
 
@@ -35,6 +48,7 @@ for display in displays
 	pl.imshow(display, interpolation="nearest")
 	pl.gray()
 	pl.show()
+end for
 
 #n_digit = 10
 
