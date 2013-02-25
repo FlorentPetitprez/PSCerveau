@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from sklearn.datasets import load_digits
 digits=load_digits()
@@ -9,7 +10,7 @@ from sklearn.svm import SVC
 
 from sklearn.multiclass import OneVsRestClassifier
 
-svm = SVC(C=.1)
+svm = SVC(C=.001)
 
 ovrest_svm = OneVsRestClassifier(svm)
 
@@ -30,6 +31,5 @@ score = cross_val_score(ovrest_svm, data, target, cv=5)
 clfs = [OneVsRestClassifier(SVC(C=alpha)) for alpha in np.logspace(-5, 1, 10)]
 
 scores = [cross_val_score(clf, data, target, cv=5) for clf in clfs]
-
 
 
