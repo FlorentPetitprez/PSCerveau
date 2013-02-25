@@ -26,9 +26,9 @@ def signatures_to_letter(signature, img_shape, thickness):
 	if(signature[1]): 
 		result=result+draw_bar((.5,0),(1,0),img_shape, 2.*thickness) 
 	if(signature[2]): 
-		result=result+draw_bar((0,.5),(.5,.5),img_shape, thickness) 
+		result=result+draw_bar((0,.5),(.5,.5),img_shape, thickness)
 	if(signature[3]): 
-		result=result+draw_bar((.5,.5),(1,.5),img_shape, thickness) 
+		result=result+draw_bar((.5,.5),(1,.5),img_shape, thickness)
 	if(signature[4]): 
 		result=result+draw_bar((0,1),(.5,1),img_shape, 2.*thickness) 
 	if(signature[5]): 
@@ -38,9 +38,9 @@ def signatures_to_letter(signature, img_shape, thickness):
 	if(signature[7]): 
 		result=result+draw_bar((0,.5),(0,1),img_shape, 2.*thickness) 
 	if(signature[8]): 
-		result=result+draw_bar((.5,0),(.5,.5),img_shape, thickness) 
+		result=result+draw_bar((.5,0),(.5,.5),img_shape, thickness)
 	if(signature[9]): 
-		result=result+draw_bar((.5,.5),(.5,1),img_shape, thickness) 
+		result=result+draw_bar((.5,.5),(.5,1),img_shape, thickness)
 	if(signature[10]): 
 		result=result+draw_bar((1,0),(1,.5),img_shape, 2.*thickness) 
 	if(signature[11]): 
@@ -111,7 +111,27 @@ def char_to_signatures(S):
 		elif(S[i]=='Y'): 
 			signature[i]=[0,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0] 
 		elif(S[i]=='Z'): 
-			signature[i]=[0,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0] 
+			signature[i]=[0,0,0,0,0,0,1,1,0,0,1,1,0,1,1,0]
+		elif(S[i]=='0'): 
+			signature[i]=[1,1,0,0,1,1,1,1,0,0,1,1,0,0,0,0]
+		elif(S[i]=='1'): 
+			signature[i]=[0,0,1,1,0,0,1,0,0,0,1,1,0,0,0,0]
+		elif(S[i]=='2'): 
+			signature[i]=[0,1,0,0,1,0,1,1,1,1,1,1,0,0,0,0]
+		elif(S[i]=='3'): 
+			signature[i]=[0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0]
+		elif(S[i]=='4'): 
+			signature[i]=[1,0,0,0,1,1,0,0,1,1,0,0,0,0,0,0]
+		elif(S[i]=='5'): 
+			signature[i]=[1,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0]
+		elif(S[i]=='6'): 
+			signature[i]=[1,1,0,0,0,1,1,1,1,1,1,1,0,0,0,0]
+		elif(S[i]=='7'): 
+			signature[i]=[0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0]
+		elif(S[i]=='8'): 
+			signature[i]=[1,1,0,0,1,1,1,1,1,1,1,1,0,0,0,0]
+		elif(S[i]=='9'): 
+			signature[i]=[1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0]
 		else: 
 			print"Probleme" 
 	return signature
@@ -140,7 +160,7 @@ def test_signature():
 
 def test_alphabet():
 	pl.figure()
-	for i, letter in enumerate(['A', 'B', 'C', 'D', 'E', 'F', 'G']):
+	for i, letter in enumerate(['0', '1', '2', '3', '4', '5', '6']):
 		pl.subplot(1, 7, i + 1)
 		display = signatures_to_letter(char_to_signatures(letter), (150,100), .1)
 		pl.imshow(display, interpolation="nearest")
