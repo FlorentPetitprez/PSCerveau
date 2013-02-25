@@ -56,3 +56,19 @@ for i in range(4):
 # each vector of prediction_bars contains the signature of the predicted character.
 prediction_bars = np.array(prediction_bars).T
 
+
+def display_prediction():
+	pl.figure()
+	for i in range(5):
+		pl.subplot(1, 10, 2*i + 1)
+		display = test_data[i].reshape(8,8)
+		pl.imshow(display)
+		pl.axis('off')		
+		pl.subplot(1, 10, 2*i + 2)
+		display = characters.signatures_to_letter(prediction_bars[i], (150,100), .1)
+		pl.imshow(display, interpolation="nearest")
+		pl.axis('off')
+		pl.gray()
+	pl.show()
+
+
