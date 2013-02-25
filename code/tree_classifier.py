@@ -40,39 +40,20 @@ def cross_val_score(clf, X, y, cv=None):
 
 score = cross_val_score(forest, data, y)
 
-"""
-image_shape=(150, 100)
-displays=[characters.signatures_to_letter(y_test_predict[i], image_shape, .1) for i range(y_test_predict.shape)]
+#affichage des chiffres
+image_shape=(8, 8)
+displays2=[]
+import math
+d=math.trunc(np.sqrt(y_test_predict.shape[0]))
+for i in range(d+1):
+   for j in range(d):
+     displays=[]
+     displays.append(15*characters.signatures_to_letter(y_test_predict[i*j], image_shape, .1))
+     displays.append(digits['images'][i*j+1000])
+   displays2.append(np.hstack(displays))
+display=np.vstack(displays2)
 pl.figure()
-for display in displays
-	pl.imshow(display, interpolation="nearest")
-	pl.gray()
-	pl.show()
-end for
+pl.imshow(display)
+pl.gray()
+pl.show()
 
-#n_digit = 10
-
-
-#pl.figure(figsize=(2. * n_digits, 2.26 * 2))
-#pl.suptitle("digits completion with extra trees classifier", size=16)
-
-#for i in xrange(1, 1 + n_digit):
- #   digit_id = np.random.randint(X_test.shape[0])
-
-  #  true_digit = np.hstack((X_test[digit_id], Y_test[digit_id]))
-   # completed_digit = np.hstack((X_test[digit_id], Y_test_predict[digit_id]))
-
-    #pl.subplot(2, n_digit, i)
-    #pl.axis("off")
-    #pl.imshow(true_digit.reshape(image_shape),
-     #         cmap=pl.cm.gray,
-      #        interpolation="nearest")
-
-    #pl.subplot(2, n_digit, n_digit + i)
-    #pl.axis("off")
-    #pl.imshow(completed_face.reshape(image_shape),
-     #         cmap=pl.cm.gray,
-      #        interpolation="nearest")
-
-#pl.show()
-"""
