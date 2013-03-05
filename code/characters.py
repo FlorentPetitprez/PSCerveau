@@ -1,6 +1,9 @@
 import numpy as np
 import pylab as pl
 
+
+#returns the array corresponding to the drawing of a bar between the points given as start and end.
+#Their coordinates must be in [0,1]
 def draw_bar(start, end, img_shape, thickness):
 
     start = np.asarray(start).ravel()
@@ -18,21 +21,23 @@ def draw_bar(start, end, img_shape, thickness):
     img=((new_grid[0]>=0.)*(new_grid[0]<=1.)*(np.abs(new_grid[1])<=thickness/2)).reshape(img_shape).astype(np.float64)
     return img
 
+
+#takes the signature of a character (a 16 int array) and returns the array corresponding to its drawing.
 def signatures_to_letter(signature, img_shape, thickness): 
 	result = np.zeros(img_shape)
 	signature = signature.ravel()
 	if(signature[0]):
-		result=result+draw_bar((0,0),(.5,0),img_shape, 2.*thickness) 
+		result=result+draw_bar((0,0),(.5,0),img_shape, 4.*thickness) 
 	if(signature[1]): 
-		result=result+draw_bar((.5,0),(1,0),img_shape, 2.*thickness) 
+		result=result+draw_bar((.5,0),(1,0),img_shape, 4.*thickness) 
 	if(signature[2]): 
 		result=result+draw_bar((0,.5),(.5,.5),img_shape, thickness)
 	if(signature[3]): 
 		result=result+draw_bar((.5,.5),(1,.5),img_shape, thickness)
 	if(signature[4]): 
-		result=result+draw_bar((0,1),(.5,1),img_shape, 2.*thickness) 
+		result=result+draw_bar((0,1),(.5,1),img_shape, 4.*thickness) 
 	if(signature[5]): 
-		result=result+draw_bar((.5,1),(1,1),img_shape, 2.*thickness) 
+		result=result+draw_bar((.5,1),(1,1),img_shape, 4.*thickness) 
 	if(signature[6]): 
 		result=result+draw_bar((0,0),(0,.5),img_shape, 2.*thickness) 
 	if(signature[7]): 
@@ -56,6 +61,7 @@ def signatures_to_letter(signature, img_shape, thickness):
 	return np.minimum(result, 1)
 
  
+#takes a character and returns its signature
 def char_to_signatures(S): 
 	n=len(S) 
  	signature=np.zeros((n,16)) 
@@ -137,6 +143,8 @@ def char_to_signatures(S):
 	return signature
 
 
+
+#takes a string and displays it.
 def display_word(word, img_shape=(150,100), thickness=.1):
 	pl.figure()
 	result = np.zeros((img_shape[0],1))	

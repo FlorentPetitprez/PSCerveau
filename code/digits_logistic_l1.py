@@ -57,18 +57,33 @@ for i in range(4):
 prediction_bars = np.array(prediction_bars).T
 
 
-def display_prediction():
+#enables the display of the set of 200 predictions, starting at position number*200. Number must be between in [0,3]
+def display_prediction(number=0):
 	pl.figure()
-	for i in range(5):
-		pl.subplot(1, 10, 2*i + 1)
-		display = test_data[i].reshape(8,8)
-		pl.imshow(display)
-		pl.axis('off')		
-		pl.subplot(1, 10, 2*i + 2)
-		display = characters.signatures_to_letter(prediction_bars[i], (150,100), .1)
-		pl.imshow(display, interpolation="nearest")
-		pl.axis('off')
-		pl.gray()
+	if (number<3):
+		for i in range(200):
+			pl.subplot(20, 20, 2*i + 1)
+			display = test_data[i+(number*200)].reshape(8,8)
+			pl.imshow(display)
+			pl.axis('off')
+			pl.gray()		
+			pl.subplot(20, 20, 2*i + 2)
+			display = characters.signatures_to_letter(prediction_bars[i+(number*200)], (150,100), .1)
+			pl.imshow(display, interpolation="nearest")
+			pl.axis('off')
+			pl.gray()
+	elif (number==3):
+		for i in range(197):
+			pl.subplot(20, 20, 2*i + 1)
+			display = test_data[i+600].reshape(8,8)
+			pl.imshow(display)
+			pl.axis('off')
+			pl.gray()		
+			pl.subplot(20, 20, 2*i + 2)
+			display = characters.signatures_to_letter(prediction_bars[i+600], (150,100), .1)
+			pl.imshow(display, interpolation="nearest")
+			pl.axis('off')
+			pl.gray()
 	pl.show()
 
 
