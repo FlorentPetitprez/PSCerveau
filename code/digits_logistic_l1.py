@@ -17,15 +17,15 @@ logregl1 = logreg(penalty='l1')
 
 
 # cross validation
-from sklearn.cross_validation import cross_val_score
+#from sklearn.cross_validation import cross_val_score
 
-score = cross_val_score(logregl1, data, target, cv=5)
+#score = cross_val_score(logregl1, data, target, cv=5)
 
-clfs = [OneVsRestClassifier(logreg(penalty='l1', C=alpha)) for alpha in np.logspace(-5, 1, 10)]
+#clfs = [OneVsRestClassifier(logreg(penalty='l1', C=alpha)) #for alpha in np.logspace(-5, 1, 10)]
 
-scores = [cross_val_score(clf, data, target, cv=5) for clf in clfs]
+#scores = [cross_val_score(clf, data, target, cv=5) for clf in clfs]
 
-scores_mean = np.array(scores).mean(axis=1) # calculation of the mean score for each value of alpha
+#scores_mean = np.array(scores).mean(axis=1) # calculation of the mean score for each value of alpha
 # end of cross validation
 
 
@@ -46,7 +46,6 @@ for i in range(12):
 	logregl1.fit(train_data, train_target[:, i])
 	predic = logregl1.predict(test_data)
 	prediction_bars.append(predic)
-
 
 # the following is because fit raises an exception "The number of classes has to be greater than one." when called for i in [12,15] (diagonal bars).
 # Indeed, we cannot fit because the value is always 0 for those bars.
@@ -85,5 +84,6 @@ def display_prediction(number=0):
 			pl.axis('off')
 			pl.gray()
 	pl.show()
+display_prediction(number=0)
 
 
