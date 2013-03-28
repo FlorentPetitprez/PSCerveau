@@ -5,6 +5,7 @@ from sklearn.base import BaseEstimator
 from sklearn.feature_selection import f_classif
 import numpy as np
 
+
 class MultiSelectKBest(BaseEstimator):
 
     def __init__(self, classif_func=f_classif, k=10,
@@ -25,6 +26,9 @@ class MultiSelectKBest(BaseEstimator):
         self.scores = self.pooling_function(np.array(scores), axis=0)
 
         return self
+
+    def fit_transform(self, X, y):
+        return self.fit(X, y).transform(X)
 
     def get_support(self):
         if self.scores is not None:

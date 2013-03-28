@@ -132,7 +132,6 @@ if __name__ == "__main__":
     from sklearn.feature_selection import SelectKBest
     from sklearn.feature_selection import f_classif
 
-
     from sklearn.linear_model import LogisticRegression
 
     from sklearn.pipeline import Pipeline
@@ -152,11 +151,20 @@ if __name__ == "__main__":
 
     ## A second pipeline using features selected per bar
     estimators2 = [Pipeline([
-        ('feature_selection', SelectKBest(f_classif, k=200)),
+        ('feature_selection', SelectKBest(f_classif, k=100)),
         ('logistic_regression', LogisticRegression(C=C, penalty='l2'))])
 
         for C in 2. ** np.arange(-24, 0, 2)]
 
     first_layer_predictor2 = CvPredictTransform(model_estimators=estimators2)
 
-    res2 = first_layer_predictor2.fit_transform(data, stimuli)
+    # this method is slow, because it keeps calling a feature reduction
+    # method for each bar and each estimator. We will globally reduce the
+    # features before starting
+
+    global_f_select = MultiSelectKBest(f_classif,
+                                       pooling_function=np.min,
+                                       k=3000)
+
+    res2 = first_layer_predictor2.fit_transform(
+        global_f_select.fit_transform(data, stimuli), stimuli)

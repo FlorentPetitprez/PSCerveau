@@ -34,7 +34,7 @@ subjects = [subject_filter(folder).groups()[0] for folder in subject_folders]
 subject_folders = dict(zip(subjects, subject_folders))
 
 
-def get_nii_data_from_folder(folder):
+def get_nii_data_from_folder(folder, use_verbs=False):
 
     # inside the folder, search only for betasXX.nii files
     beta_map_regex = r'betas(\d{2}).nii$'
@@ -62,7 +62,21 @@ def get_nii_data_from_folder(folder):
 
     # return only the useful values: The last 6 are
     # drift regressors and are thrown away
-    return masked_nii_data[:, :-6, :]
+
+    masked_nii_data = masked_nii_data[:, :-6, :]
+
+    if use_verbs:
+        return masked_nii_data
+    else:
+        # In case we do not want the verbs (default case)
+        # we need to remove the lines corresponding to verbs
+
+        masked_nii_data = masked_nii_data.reshape(-1,
+                                                  masked_nii_data.shape[-1])
+
+        _, verbs, _, _, _ = parse_stimuli()
+
+        return masked_nii_data[verbs == False]
 
 
 def get_nii_data(subject):
@@ -79,6 +93,8 @@ def load_stimuli_raw():
 
     stim_file_names = filter(stim_file_fil, glob.glob(
         os.path.join(folder, "*")))
+
+    stim_file_names = sorted(stim_file_names)
 
     return np.concatenate([pl.csv2rec(filename, delimiter="\t")
                            for filename in stim_file_names])
