@@ -72,7 +72,7 @@ def cv_predict_transform(model_estimators, data, targets,
 
             if verbose >= 100:
                 print "Predicting target %d" % t
-            est = estimators[best_model]
+            est = model_estimators[best_model]
 
             est.fit(data[outer_train], target)
 
@@ -168,3 +168,31 @@ if __name__ == "__main__":
 
     res2 = first_layer_predictor2.fit_transform(
         global_f_select.fit_transform(data, stimuli), stimuli)
+
+
+    # Now visualise the predictions.
+    from viz import get_bars, draw_words, pad, make_collage
+    bars = get_bars(img_size=(50, 50))
+    words1 = draw_words(res1, bars)
+    words2 = draw_words(res2, bars)
+    words = draw_words(stimuli, bars)
+
+    stacked = np.concatenate([words1, words2, words], axis=1)
+    # pad this slightly in order to be able to distinguish groups
+
+    stacked = pad(stacked, [0, 10, 10])
+
+    num_x = 8
+    num_y = 12
+
+    start_at = 0
+
+    collage = make_collage(stacked[start_at:start_at + (num_x * num_y)].\
+        reshape(num_x, num_y, stacked.shape[1], stacked.shape[2]))
+
+    import pylab as pl
+    pl.figure()
+    pl.imshow(collage)
+    pl.gray()
+    pl.show()
+
