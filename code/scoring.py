@@ -31,4 +31,4 @@ def fifty_fifty_scoring(y_pred, y_true):
                             true_distances[np.newaxis, :]))
 
     return ((distance_difference > 0).sum(axis=1).astype(np.float64) /
-            (len(y_pred) - 1)), all_hamming_distances, true_distances, distance_difference
+            (len(y_pred) - 1))
