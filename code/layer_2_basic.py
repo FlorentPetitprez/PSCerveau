@@ -32,11 +32,11 @@ if __name__ == "__main__":
 
 
 
-    # Use the layer 1 results to learn a second level classifier
+    # Use the layer 1 results to learn a second level classifier on words
 
     from sklearn.ensemble import ExtraTreesClassifier
 
-    forest = ExtraTreesClassifier(n_estimators=100)
+    forest = ExtraTreesClassifier(n_estimators=200)
 
     train_data = res1[:200]
     train_target = stimuli[:200]
@@ -48,6 +48,17 @@ if __name__ == "__main__":
 
     p = forest.predict(test_data)
 
+    # Use the layer 1 results to learn a second level classifier on letters
+
+    forests = [ExtraTreesClassifier(n_estimators=200) for i in range(4)]
+    letter_length = stimuli.shape[1] / 4
+    predictions = []
+    for i, forest in zip(
+            range(0, stimuli.shape[1], letter_length),
+            forests):
+        forest.fit(train_data, train_target[:, i:i + letter_length])
+        predictions.append(forest.predict(test_data))
+    predictions = np.hstack(predictions)
 
     # visualise the random forests result
 
@@ -55,9 +66,11 @@ if __name__ == "__main__":
     bars = get_bars(img_size=(50, 50))
     words_layer1 = draw_words(res1[200:], bars)
     words_forest = draw_words(p, bars)
+    words_forest_by_letters = draw_words(predictions, bars)
     words = draw_words(stimuli[200:], bars)
 
-    stacked = np.concatenate([words_layer1, words_forest, words], axis=1)
+    stacked = np.concatenate([words_layer1, words_forest,
+                              words_forest_by_letters, words], axis=1)
     # pad this slightly in order to be able to distinguish groups
 
     stacked = pad(stacked, [0, 10, 10])

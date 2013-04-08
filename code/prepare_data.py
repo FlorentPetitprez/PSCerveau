@@ -79,11 +79,20 @@ def get_nii_data_from_folder(folder, use_verbs=False):
         return masked_nii_data[verbs == False]
 
 
-def get_nii_data(subject):
+def get_nii_data(subject, normalize_sessions=True):
     folder = os.path.join(subject_folders[subject],
                           "glm")
 
-    return get_nii_data_from_folder(folder)
+    data = get_nii_data_from_folder(folder)
+
+    if normalize_sessions:
+        data = data.reshape(6, -1, data.shape[-1])
+        data = data - data.mean(1)[:, np.newaxis, :]
+        data = data / np.sqrt((data ** 2).sum(1))[:, np.newaxis, :]
+
+    data = data.reshape(-1, data.shape[-1])
+
+    return data
 
 
 def load_stimuli_raw():
