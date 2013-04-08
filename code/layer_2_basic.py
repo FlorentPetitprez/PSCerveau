@@ -14,6 +14,7 @@ if __name__ == "__main__":
     from sklearn.feature_selection import f_classif
 
     from sklearn.linear_model import LogisticRegression
+    from sklearn.svm import SVC
 
     from sklearn.pipeline import Pipeline
 
@@ -23,6 +24,9 @@ if __name__ == "__main__":
     selector = MultiSelectKBest(f_classif, k=500)
     estimators = [LogisticRegression(C=C, penalty='l2')
                   for C in 2. ** np.arange(-24, 0, 2)]
+
+    # estimators = [SVC(C=C, probability=True, kernel="linear")
+    #               for C in 2. ** np.arange(-24, 2, 2)]
 
     first_layer_predictor = CvPredictTransform(model_estimators=estimators)
     pipeline = Pipeline([('feature_reduction', selector),
