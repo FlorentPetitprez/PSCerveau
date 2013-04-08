@@ -20,7 +20,7 @@ def fifty_fifty_scoring(y_pred, y_true):
     """
 
     all_hamming_distances = (
-        (y_pred[:, np.newaxis, :] == y_true[np.newaxis, :, :])
+        (y_pred[:, np.newaxis, :] != y_true[np.newaxis, :, :])
         ).sum(-1)
 
     true_distances = np.diag(all_hamming_distances)
@@ -31,4 +31,4 @@ def fifty_fifty_scoring(y_pred, y_true):
                             true_distances[np.newaxis, :]))
 
     return ((distance_difference > 0).sum(axis=1).astype(np.float64) /
-            len(y_pred))
+            (len(y_pred) - 1)), all_hamming_distances, true_distances, distance_difference
