@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cross_validation import KFold, cross_val_score
 from sklearn.base import BaseEstimator
-
+import scoring
 
 def cv_predict_transform(model_estimators, data, targets,
                          prediction_function="predict_proba",
@@ -73,7 +73,11 @@ def cv_predict_transform(model_estimators, data, targets,
             if verbose >= 100:
                 print "Predicting target %d" % t
             est = model_estimators[best_model]
-
+            '''
+            best_gamma=10.0**(-5+best_model%11)
+            best_C=10.0**(-5+(best_model-best_model%11)/11)
+            print "best_gamma=", best_gamma, ", best_C=", best_C
+            '''
             est.fit(data[outer_train], target)
 
             if prediction_function == "predict_proba":
@@ -100,7 +104,7 @@ def cv_predict_transform(model_estimators, data, targets,
 class CvPredictTransform(BaseEstimator):
 
     def __init__(self, model_estimators,
-                 prediction_function="predict_proba",
+                 prediction_function="predict",
                  verbose=10):
         self.model_estimators = model_estimators
         self.prediction_function = prediction_function
@@ -119,7 +123,7 @@ class CvPredictTransform(BaseEstimator):
 
         self.scores = scores
         self.predictions = predictions
-        return predictions
+        return predictions, scores
 
 
 if __name__ == "__main__":
@@ -141,8 +145,8 @@ if __name__ == "__main__":
     ## and Radial Basis Function (RBF) Kernel
     selector = MultiSelectKBest(f_classif, k=500)
     estimators = []
-    for C in 10.0 ** np.arange(-24, 0, 2): 
-        for gamma in 10.0 **np.arange(-10, 1):
+    for C in 10.0 ** np.arange(-5, 5, 1): 
+        for gamma in 10.0 **np.arange(-5, 5, 1):
             estimators.append(SVC(C=C, gamma=gamma))
                   
 
@@ -150,12 +154,13 @@ if __name__ == "__main__":
     pipeline = Pipeline([('feature_reduction', selector),
                          ('first_layer_prediction', first_layer_predictor)])
 
-    res1 = pipeline.fit_transform(data, stimuli)
-
+    res1,scores1 = pipeline.fit_transform(data, stimuli)
+    print "score=", np.mean(scores1)
+    '''
     ## A second pipeline using features selected per bar
     estimators2 = []
-    for C in 10.0 ** np.arange(-24, 0, 2):
-        for gamma in 10.0 **np.arange(-10, 1):
+    for C in 10.0 ** np.arange(-5, 5, 1):
+        for gamma in 10.0 **np.arange(-5, 5, 1):
             estimators.append(Pipeline([
             ('feature_selection', SelectKBest(f_classif, k=100)),
             ('SVM_noyeau_gaussien', SVC(C=C, gamma=gamma))]))
@@ -174,12 +179,12 @@ if __name__ == "__main__":
     res2 = first_layer_predictor2.fit_transform(
         global_f_select.fit_transform(data, stimuli), stimuli)
 
-
+    '''
     # Now visualise the predictions.
     from viz import get_bars, draw_words, pad, make_collage
     bars = get_bars(img_size=(50, 50))
     words1 = draw_words(res1, bars)
-    words2 = draw_words(res2, bars)
+    words2 = draw_words(res1, bars)
     words = draw_words(stimuli, bars)
 
     stacked = np.concatenate([words1, words2, words], axis=1)
