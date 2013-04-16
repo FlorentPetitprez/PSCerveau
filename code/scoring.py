@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def fifty_fifty_scoring(y_pred, y_true):
+def fifty_fifty_scoring(y_pred, y_true, sum=True):
     """Compares two by two:
     Prediction A: PA, Prediction B: PB
     True value A: TA, True value B: TB
@@ -30,5 +30,11 @@ def fifty_fifty_scoring(y_pred, y_true):
                            (true_distances[:, np.newaxis] +
                             true_distances[np.newaxis, :]))
 
-    return ((distance_difference > 0).sum(axis=1).astype(np.float64) /
+    res = ((distance_difference > 0).sum(axis=1).astype(np.float64) /
             (len(y_pred) - 1))
+
+    if sum:
+        return res.mean()
+    else:
+        return res
+
