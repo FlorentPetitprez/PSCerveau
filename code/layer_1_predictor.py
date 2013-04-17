@@ -196,3 +196,15 @@ if __name__ == "__main__":
     pl.gray()
     pl.show()
 
+
+    import scoring
+    pl.figure()
+    roc1 = scoring.roc(res1, stimuli)
+    roc2 = scoring.roc(res2, stimuli)
+
+    pl.plot(roc1)
+    pl.plot(roc2)
+    pl.plot([0, len(stimuli)], [0, 1])
+
+    
+
