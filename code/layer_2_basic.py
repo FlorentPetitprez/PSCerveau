@@ -12,7 +12,6 @@ if __name__ == "__main__":
     from multi_select_k_best import MultiSelectKBest
     from sklearn.feature_selection import SelectKBest
     from sklearn.feature_selection import f_classif
-
     from sklearn.linear_model import LogisticRegression
     from sklearn.svm import SVC
 
@@ -32,9 +31,17 @@ if __name__ == "__main__":
     pipeline = Pipeline([('feature_reduction', selector),
                          ('first_layer_prediction', first_layer_predictor)])
 
-    res1 = pipeline.fit_transform(data, stimuli)
 
 
+    def call_pipeline(p, data, stimuli):
+        return p.fit_transform(data, stimuli)
+
+    from sklearn.externals.joblib import Memory
+    mem = Memory(cachedir="/home/elise/joblib")
+
+    call_pipeline = mem.cache(call_pipeline)
+
+    res1 = call_pipeline(pipeline, data, stimuli)
 
     # Use the layer 1 results to learn a second level classifier on words
 
@@ -87,9 +94,24 @@ if __name__ == "__main__":
     collage = make_collage(stacked[start_at:start_at + (num_x * num_y)].\
         reshape(num_x, num_y, stacked.shape[1], stacked.shape[2]))
 
+
+
+    def score_func(y_true, y_pred):
+        return (y_true == y_pred).astype(np.float64).sum() / y_true.size
+        
+    from sklearn.cross_validation import cross_val_score
+    scores = cross_val_score(forest, res1, stimuli, cv=6, score_func=score_func)
+
+
     import pylab as pl
     pl.figure()
     pl.imshow(collage)
     pl.gray()
     pl.show()
 
+    import scoring
+    pl.figure()
+    roc1 = scoring.roc(predictions, stimuli)
+
+    pl.plot(roc1)
+    pl.plot([0, len(stimuli)], [0, 1])
