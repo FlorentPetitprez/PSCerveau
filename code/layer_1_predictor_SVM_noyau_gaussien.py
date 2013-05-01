@@ -145,8 +145,8 @@ if __name__ == "__main__":
     ## and Radial Basis Function (RBF) Kernel
     selector = MultiSelectKBest(f_classif, k=500)
     estimators = []
-    for C in 10.0 ** np.arange(-5, 5, 1): 
-        for gamma in 10.0 **np.arange(-5, 5, 1):
+    for C in np.arange(0.01, 1.1, 0.1): 
+        for gamma in np.arange(0.01, 1.1, 0.1):
             estimators.append(SVC(C=C, gamma=gamma))
                   
 
@@ -155,13 +155,13 @@ if __name__ == "__main__":
                          ('first_layer_prediction', first_layer_predictor)])
 
     res1,scores1 = pipeline.fit_transform(data, stimuli)
-    print "score=", np.mean(scores1)
-    '''
+    print "score1=", np.mean(scores1)
+    
     ## A second pipeline using features selected per bar
     estimators2 = []
-    for C in 10.0 ** np.arange(-5, 5, 1):
-        for gamma in 10.0 **np.arange(-5, 5, 1):
-            estimators.append(Pipeline([
+    for C in np.arange(0.01, 1.1, 0.1):
+        for gamma in np.arange(0.01, 1.1, 0.1):
+            estimators2.append(Pipeline([
             ('feature_selection', SelectKBest(f_classif, k=100)),
             ('SVM_noyeau_gaussien', SVC(C=C, gamma=gamma))]))
 
@@ -176,15 +176,16 @@ if __name__ == "__main__":
                                        pooling_function=np.min,
                                        k=3000)
 
-    res2 = first_layer_predictor2.fit_transform(
+    res2,scores2 = first_layer_predictor2.fit_transform(
         global_f_select.fit_transform(data, stimuli), stimuli)
+    print "score2=", np.mean(scores2)
 
-    '''
+    
     # Now visualise the predictions.
     from viz import get_bars, draw_words, pad, make_collage
     bars = get_bars(img_size=(50, 50))
     words1 = draw_words(res1, bars)
-    words2 = draw_words(res1, bars)
+    words2 = draw_words(res2, bars)
     words = draw_words(stimuli, bars)
 
     stacked = np.concatenate([words1, words2, words], axis=1)
@@ -205,4 +206,13 @@ if __name__ == "__main__":
     pl.imshow(collage)
     pl.gray()
     pl.show()
+
+    import scoring
+    pl.figure()
+    roc1 = scoring.roc(res1, stimuli)
+    roc2 = scoring.roc(res2, stimuli)
+
+    pl.plot(roc1)
+    pl.plot(roc2)
+    pl.plot([0, len(stimuli)], [0, 1])
 
