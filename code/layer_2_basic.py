@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     ## A first pipeline using globally selected features
     ## and l2 logistic regression
-    selector = MultiSelectKBest(f_classif, k=500)
+    selector = MultiSelectKBest(f_classif, k=100)
     estimators = [LogisticRegression(C=C, penalty='l2')
                   for C in 2. ** np.arange(-24, 0, 2)]
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     forest.fit(train_data, train_target)
 
-    p = forest.predict_proba(test_data)
+    p = np.array(forest.predict_proba(test_data))
 
     # Use the layer 1 results to learn a second level classifier on letters
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
             range(0, stimuli.shape[1], letter_length),
             forests):
         forest.fit(train_data, train_target[:, i:i + letter_length])
-        predictions.append(forest.predict_proba(test_data))
+        predictions.append(np.array(forest.predict_proba(test_data)))
     predictions = np.hstack(predictions)
 
     # visualise the random forests result
