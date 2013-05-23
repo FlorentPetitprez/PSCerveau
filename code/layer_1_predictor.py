@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.cross_validation import KFold, cross_val_score
 from sklearn.base import BaseEstimator
+from sklearn.preprocessing import Scaler
 
 
 def cv_predict_transform(model_estimators, data, targets,
@@ -136,12 +137,12 @@ if __name__ == "__main__":
 
     from sklearn.pipeline import Pipeline
 
-
+    scaler = Scaler()
     ## A first pipeline using globally selected features
     ## and l2 logistic regression
     selector = MultiSelectKBest(f_classif, k=500)
-    estimators = [LogisticRegression(C=C, penalty='l2')
-                  for C in 2. ** np.arange(-24, 0, 2)]
+    estimators = [LogisticRegression(C=C, penalty='l2', intercept_scaling=100)
+                  for C in 2. ** np.arange(3, 4, 2)]
 
     first_layer_predictor = CvPredictTransform(model_estimators=estimators)
     pipeline = Pipeline([('feature_reduction', selector),
@@ -152,9 +153,9 @@ if __name__ == "__main__":
     ## A second pipeline using features selected per bar
     estimators2 = [Pipeline([
         ('feature_selection', SelectKBest(f_classif, k=100)),
-        ('logistic_regression', LogisticRegression(C=C, penalty='l2'))])
-
-        for C in 2. ** np.arange(-24, 0, 2)]
+        ('scaler', scaler),
+        ('logistic_regression', LogisticRegression(C=C, penalty='l2', intercept_scaling=100))])
+        for C in 2. ** np.arange(3, 4, 2)]
 
     first_layer_predictor2 = CvPredictTransform(model_estimators=estimators2)
 
@@ -166,9 +167,9 @@ if __name__ == "__main__":
                                        pooling_function=np.min,
                                        k=3000)
 
-    res2 = first_layer_predictor2.fit_transform(
-        global_f_select.fit_transform(data, stimuli), stimuli)
-
+    #res2 = first_layer_predictor2.fit_transform(
+    #    global_f_select.fit_transform(data, stimuli), stimuli)
+    res2 = first_layer_predictor2.fit_transform( data, stimuli)
 
     # Now visualise the predictions.
     from viz import get_bars, draw_words, pad, make_collage
@@ -194,8 +195,6 @@ if __name__ == "__main__":
     pl.figure()
     pl.imshow(collage)
     pl.gray()
-    pl.show()
-
 
     import scoring
     pl.figure()
@@ -206,5 +205,6 @@ if __name__ == "__main__":
     pl.plot(roc2)
     pl.plot([0, len(stimuli)], [0, 1])
 
+pl.show()
     
 

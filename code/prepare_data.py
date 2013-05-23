@@ -48,8 +48,10 @@ def get_nii_data_from_folder(folder, use_verbs=False):
 
     # get mask file. It must be in same folder
     mask_file = os.path.join(folder, "mask.nii")
+    #new_folder = '/volatile/thirion/mygit/worddecoding/brain_reading/fmri/vl100318/fmri/' ## ugly
+    #mask_file = os.path.join(new_folder, "HO_epi.nii")
 
-    masker = NiftiMasker(mask_file)
+    masker = NiftiMasker(mask_file, smooth=3.)
 
     masker.fit(beta_files[0])
 
@@ -73,7 +75,7 @@ def get_nii_data_from_folder(folder, use_verbs=False):
 
         masked_nii_data = masked_nii_data.reshape(-1,
                                                   masked_nii_data.shape[-1])
-
+        masked_nii_data = masked_nii_data[:, masked_nii_data.std(0) > 0]
         _, verbs, _, _, _ = parse_stimuli()
 
         return masked_nii_data[verbs == False]
