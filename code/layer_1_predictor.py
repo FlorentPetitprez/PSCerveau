@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
     ## A first pipeline using globally selected features
     ## and l2 logistic regression
-    selector = MultiSelectKBest(f_classif, k=500)
+    selector = MultiSelectKBest(f_classif, k=100)
     estimators = [LogisticRegression(C=C, penalty='l2')
                   for C in 2. ** np.arange(-24, 0, 2)]
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     res1 = pipeline.fit_transform(data, stimuli)
 
     ## A second pipeline using features selected per bar
-    estimators2 = [Pipeline([
+    '''estimators2 = [Pipeline([
         ('feature_selection', SelectKBest(f_classif, k=100)),
         ('logistic_regression', LogisticRegression(C=C, penalty='l2'))])
 
@@ -164,17 +164,17 @@ if __name__ == "__main__":
 
     global_f_select = MultiSelectKBest(f_classif,
                                        pooling_function=np.min,
-                                       k=3000)
+                                       k=100)
 
     res2 = first_layer_predictor2.fit_transform(
-        global_f_select.fit_transform(data, stimuli), stimuli)
+        global_f_select.fit_transform(data, stimuli), stimuli)'''
 
 
     # Now visualise the predictions.
     from viz import get_bars, draw_words, pad, make_collage
     bars = get_bars(img_size=(50, 50))
     words1 = draw_words(res1, bars)
-    words2 = draw_words(res2, bars)
+    words2 = draw_words(res1, bars)
     words = draw_words(stimuli, bars)
 
     stacked = np.concatenate([words1, words2, words], axis=1)
@@ -192,7 +192,7 @@ if __name__ == "__main__":
 
     import pylab as pl
     pl.figure()
-    pl.imshow(collage)
+    pl.imshow(collage)       
     pl.gray()
     pl.show()
 
@@ -200,10 +200,10 @@ if __name__ == "__main__":
     import scoring
     pl.figure()
     roc1 = scoring.roc(res1, stimuli)
-    roc2 = scoring.roc(res2, stimuli)
+    #roc2 = scoring.roc(res2, stimuli)
 
     pl.plot(roc1)
-    pl.plot(roc2)
+    #pl.plot(roc2)
     pl.plot([0, len(stimuli)], [0, 1])
 
     
