@@ -74,8 +74,6 @@ def cv_predict_transform(model_estimators, data, targets,
             if verbose >= 100:
                 print "Predicting target %d" % t
             est = model_estimators[best_model]
-            best_alpha = est.alpha
-            print "Meilleur alpha = ", best_alpha
             est.fit(data[outer_train], target)
 
             if prediction_function == "predict_proba":
@@ -121,7 +119,7 @@ class CvPredictTransform(BaseEstimator):
 
         self.scores = scores
         self.predictions = predictions
-        return predictions
+        return predictions, scores
 
 
 if __name__ == "__main__":
@@ -141,19 +139,20 @@ if __name__ == "__main__":
 
     ## A first pipeline using globally selected features
     ## and l2 linear regression
-    selector = MultiSelectKBest(f_classif, k=500)
+    selector = MultiSelectKBest(f_classif, k=1000)
     estimators = [Ridge(alpha = alpha, normalize = True)
-                  for alpha in 10. ** np.arange(-5, 5, 1)]
+                  for alpha in 10. ** np.arange(-5, 2, 1)]
 
     first_layer_predictor = CvPredictTransform(model_estimators=estimators)
     pipeline = Pipeline([('feature_reduction', selector),
                          ('first_layer_prediction', first_layer_predictor)])
 
-    res1 = pipeline.fit_transform(data, stimuli)
+    res1, scores1 = pipeline.fit_transform(data, stimuli)
+    print np.mean(scores1)
     print scoring.fifty_fifty_scoring(res1, stimuli)
 
     ## A second pipeline using features selected per bar
-    estimators2 = [Pipeline([
+    '''estimators2 = [Pipeline([
         ('feature_selection', SelectKBest(f_classif, k=100)),
         ('linear_regression', Ridge(alpha = alpha, normalize = True))])
 
@@ -171,16 +170,18 @@ if __name__ == "__main__":
 
     res2 = first_layer_predictor2.fit_transform(
         global_f_select.fit_transform(data, stimuli), stimuli)
-    print scoring.fifty_fifty_scoring(res2, stimuli)
+    print scoring.fifty_fifty_scoring(res2, stimuli)'''
 
     # Now visualise the predictions.
     from viz import get_bars, draw_words, pad, make_collage
     bars = get_bars(img_size=(50, 50))
     words1 = draw_words(res1, bars)
-    words2 = draw_words(res2, bars)
+    words2 = draw_words(res1, bars)
     words = draw_words(stimuli, bars)
 
     stacked = np.concatenate([words1, words2, words], axis=1)
+
+
     # pad this slightly in order to be able to distinguish groups
 
     stacked = pad(stacked, [0, 10, 10])
@@ -198,4 +199,11 @@ if __name__ == "__main__":
     pl.imshow(collage)
     pl.gray()
     pl.show()
+
+    import scoring
+    pl.figure()
+    roc1 = scoring.roc(res1, stimuli)
+
+    pl.plot(roc1)
+    pl.plot([0, len(stimuli)], [0, 1])
 

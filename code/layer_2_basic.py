@@ -22,7 +22,7 @@ if __name__ == "__main__":
     ## and l2 logistic regression
     selector = MultiSelectKBest(f_classif, k=100)
     estimators = [LogisticRegression(C=C, penalty='l2')
-                  for C in 2. ** np.arange(-24, 0, 2)]
+                  for C in [10]]#]2. ** np.arange(-24, 0, 2)]
 
     # estimators = [SVC(C=C, probability=True, kernel="linear")
     #               for C in 2. ** np.arange(-24, 2, 2)]
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         return p.fit_transform(data, stimuli)
 
     from sklearn.externals.joblib import Memory
-    mem = Memory(cachedir="/home/elise/joblib")
+    mem = Memory(cachedir="/tmp/joblib")
 
     call_pipeline = mem.cache(call_pipeline)
 
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     forest.fit(train_data, train_target)
 
-    p = np.array(forest.predict_proba(test_data))
+    p = np.array(forest.predict_proba(test_data)).T[1]
 
     # Use the layer 1 results to learn a second level classifier on letters
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
             range(0, stimuli.shape[1], letter_length),
             forests):
         forest.fit(train_data, train_target[:, i:i + letter_length])
-        predictions.append(np.array(forest.predict_proba(test_data)))
+        predictions.append(np.array(forest.predict_proba(test_data)).T[1])
     predictions = np.hstack(predictions)
 
     # visualise the random forests result
@@ -95,11 +95,14 @@ if __name__ == "__main__":
         reshape(num_x, num_y, stacked.shape[1], stacked.shape[2]))
 
     def score_func(y_true, y_pred):
-	return 0.5*y_true*(y_true == y_pred).astype(np.float64).sum() / y_true.size + 0.5*(1-y_true)*(y_true == y_pred).astype(np.float64).sum()/ y_true.size
+	return 0.5 * ((y_true == y_pred) * y_true).sum() / y_true.sum() +\
+            0.5 * ((y_true == y_pred) * (1 - y_true)).sum() / (1 - y_true).sum()
         
     from sklearn.cross_validation import cross_val_score
-    scores1 = cross_val_score(forest, res1, stimuli, cv=6, score_func=score_func)
-    scores2 = cross_val_score(prediction, res1, stimuli, cv=6, score_func=score_func)
+    scores1 = cross_val_score(forest, res1 > .5, stimuli, cv=6,
+                              score_func=score_func)
+    #scores2 = cross_val_score(, res1 > .5, stimuli, cv=6,
+    #                          score_func=score_func)
 
 
     import pylab as pl
@@ -109,11 +112,13 @@ if __name__ == "__main__":
 
     import scoring
     pl.figure()
-    roc1 = scoring.roc(forest, stimuli)
+    roc1 = scoring.roc(p, stimuli)
     roc2 = scoring.roc(predictions, stimuli)
 
-    pl.plot(roc1)
-    pl.plot(roc2)
+    pl.plot(roc1, c='b', label = 'Mot entier')
+    pl.plot(roc2, c='g', label = 'Lettre par lettre')
+    pl.grid()
+    pl.title('Résultats de deuxième couche, avec une première couche logistique L2 et k=100 voxels')
     pl.plot([0, len(stimuli)], [0, 1])
 
-    pl.show()
+pl.show()

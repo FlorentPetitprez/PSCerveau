@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.cross_validation import KFold, cross_val_score
 from sklearn.base import BaseEstimator
-import scoring
+
 
 def cv_predict_transform(model_estimators, data, targets,
                          prediction_function="predict_proba",
@@ -73,8 +73,7 @@ def cv_predict_transform(model_estimators, data, targets,
             if verbose >= 100:
                 print "Predicting target %d" % t
             est = model_estimators[best_model]
-            best_alpha = 10. ** (-5 + best_model) 
-            print "Meilleur alpha = ", best_alpha
+
             est.fit(data[outer_train], target)
 
             if prediction_function == "predict_proba":
@@ -120,7 +119,7 @@ class CvPredictTransform(BaseEstimator):
 
         self.scores = scores
         self.predictions = predictions
-        return predictions, scores
+        return predictions
 
 
 if __name__ == "__main__":
@@ -140,7 +139,7 @@ if __name__ == "__main__":
 
     ## A first pipeline using globally selected features
     ## and l2 logistic regression
-    selector = MultiSelectKBest(f_classif, k=1000)
+    selector = MultiSelectKBest(f_classif, k=100)
     estimators = [LogisticRegression(C=C, penalty='l2')
                   for C in 2. ** np.arange(-24, 0, 2)]
 
@@ -148,9 +147,7 @@ if __name__ == "__main__":
     pipeline = Pipeline([('feature_reduction', selector),
                          ('first_layer_prediction', first_layer_predictor)])
 
-    res1, scores1 = pipeline.fit_transform(data, stimuli)
-    print np.mean(scores1)
-    print scoring.fifty_fifty_scoring(res1, stimuli)
+    res1 = pipeline.fit_transform(data, stimuli)
 
     ## A second pipeline using features selected per bar
     '''estimators2 = [Pipeline([
@@ -167,7 +164,7 @@ if __name__ == "__main__":
 
     global_f_select = MultiSelectKBest(f_classif,
                                        pooling_function=np.min,
-                                       k=3000)
+                                       k=100)
 
     res2 = first_layer_predictor2.fit_transform(
         global_f_select.fit_transform(data, stimuli), stimuli)'''
@@ -195,7 +192,19 @@ if __name__ == "__main__":
 
     import pylab as pl
     pl.figure()
-    pl.imshow(collage)
+    pl.imshow(collage)       
     pl.gray()
     pl.show()
+
+
+    import scoring
+    pl.figure()
+    roc1 = scoring.roc(res1, stimuli)
+    #roc2 = scoring.roc(res2, stimuli)
+
+    pl.plot(roc1)
+    #pl.plot(roc2)
+    pl.plot([0, len(stimuli)], [0, 1])
+
+    
 

@@ -9,7 +9,7 @@ import numpy as np
 class MultiSelectKBest(BaseEstimator):
 
     def __init__(self, classif_func=f_classif, k=10,
-                 pooling_function=np.mean):
+                 pooling_function=np.min):
         self.classif_func = classif_func
         self.k = k
         self.pooling_function = pooling_function

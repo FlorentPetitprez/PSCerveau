@@ -56,7 +56,8 @@ def likelihoods(y_pred, y_true):
 
     adjusted_probabilities = np.abs((1. - y_true)[np.newaxis, :, :] -
                                     y_pred[:, np.newaxis, :])
-
+    adjusted_probabilities = np.minimum(adjusted_probabilities, .95)
+    adjusted_probabilities = np.maximum(adjusted_probabilities, .05)
     cumulated = np.prod(adjusted_probabilities, axis=-1)
 
     return cumulated
@@ -64,14 +65,14 @@ def likelihoods(y_pred, y_true):
 
 def rankings(y_pred, y_true):
 
-    l = likelihoods(y_pred, y_true)
+    lk = likelihoods(y_pred, y_true)
 
-    all_ranks = l.argsort(axis=1)[::-1]
+    all_ranks = lk.argsort(axis=1)[:, ::-1]
+
     placement_bin = all_ranks == np.arange(len(y_pred))[:, np.newaxis]
 
     placement_number = (np.arange(len(y_true), dtype=np.int64)[np.newaxis, :] *
                         np.ones([len(y_pred), 1], dtype=np.int64))[placement_bin]
-
     return placement_number
 
 
